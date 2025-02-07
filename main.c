@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 // Функция для проверки, является ли строка числом с плавающей точкой
 int is_valid_float(const char *str) {
     char *endptr;
@@ -11,7 +10,7 @@ int is_valid_float(const char *str) {
     if (*endptr != '\0' && *endptr != '\n') {
         return 0;  // Не число
     }
-    return 1;  // Число
+    return 1; // Число
 }
 
 // Структура для представления окружности
