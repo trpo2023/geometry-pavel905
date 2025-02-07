@@ -8,7 +8,7 @@
 #include <geometry.h>    // Подключаем geometry.h
 
 int main() {
-    char input[256];
+    char input[256]
 
     printf("Enter figure WKT (e.g., CIRCLE(x y, radius), TRIANGLE(x1 y1, x2 y2, x3 y3), POLYGON((x1 y1, x2 y2, ..., xn yn))): ");
     if (fgets(input, sizeof(input), stdin) == NULL) {
