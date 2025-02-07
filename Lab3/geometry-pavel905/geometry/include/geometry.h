@@ -23,6 +23,11 @@ typedef struct {
     Point p3;
 } Triangle;
 
+typedef struct {
+    double area;
+    double perimeter;
+} TriangleMetrics;
+
 // Структура для полигона
 typedef struct {
     int n;          // Количество вершин
@@ -36,6 +41,7 @@ double circle_perimeter(Circle c);
 // Прототипы функций для треугольника
 double triangle_area(Triangle t);
 double triangle_perimeter(Triangle t);
+TriangleMetrics calculate_triangle_metrics(const Triangle* triangle);
 
 // Прототипы функций для полигона
 double polygon_area(Polygon p);

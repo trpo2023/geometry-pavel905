@@ -20,6 +20,9 @@ TEST_SRC = test.c
 TEST_OBJ = $(OBJ_DIR)/test.o
 TEST_EXEC = test
 
+LIB_SRC = $(wildcard $(SRC_DIR)/geometry/*.c)
+LIB_OBJ = $(patsubst $(SRC_DIR)/geometry/%.c,$(OBJ_DIR)/src/geometry/%.o, $(LIB_SRC))
+
 DEP_FILES = $(LIB_OBJ:.o=.d) $(APP_OBJ:.o=.d) $(WKT_PARSER_OBJ:.o=.d)
 
 # Создание необходимых каталогов

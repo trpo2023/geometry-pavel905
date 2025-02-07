@@ -21,6 +21,8 @@ int main() {
         Circle circle;
         if (parse_circle_wkt(input, &circle) == 0) {
             print_circle_wkt(&circle);
+		 printf("  Perimeter: %f\n", circle_perimeter(circle));
+		    printf("  Area: %f\n", circle_area(circle));
         } else {
             printf("Incorrect circle format\n");
             return 1;
@@ -29,6 +31,14 @@ int main() {
         Triangle triangle;
         if (parse_triangle_wkt(input, &triangle) == 0) {
             print_triangle_wkt(&triangle);
+
+             TriangleMetrics metrics = calculate_triangle_metrics(&triangle);
+
+             printf("Triangle:\n");
+             printf("  Perimeter: %f\n", metrics.perimeter);
+             printf("  Area: %f\n", metrics.area);
+	    //printf("  Perimeter: %f\n", triangle_perimeter(triangle));
+	   // printf("  Area: %f\n", triangle_area(triangle));
         } else {
             printf("Incorrect triangle format\n");
             return 1;
@@ -37,6 +47,12 @@ int main() {
         Polygon polygon;
         if (parse_polygon_wkt(input, &polygon) == 0) {
             print_polygon_wkt(&polygon);
+ printf("  Perimeter: %f\n", polygon_perimeter(polygon));
+        printf("  Area: %f\n", polygon_area(polygon));
+
+        // Освобождаем выделенную память
+        polygon.vertices = NULL;
+        polygon.n = 0;
             free(polygon.vertices);
         } else {
             printf("Incorrect polygon format\n");
