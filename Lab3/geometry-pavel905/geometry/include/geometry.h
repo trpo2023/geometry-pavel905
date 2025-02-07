@@ -1,33 +1,44 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-// Для Circle
+#include <math.h> // Для M_PI и sqrt
+
+// Общая структура для точки (если необходимо для полигона)
 typedef struct {
+    double x;
+    double y;
+} Point;
+
+// Структура для окружности
+typedef struct {
+	double x;
+    double y;
     double radius;
 } Circle;
 
-double circle_perimeter(const Circle *c);
-double circle_area(const Circle *c);
-
-// Для Triangle
+// Структура для треугольника
 typedef struct {
-    double a;
-    double b;
-    double c;
+    Point p1;
+    Point p2;
+    Point p3;
 } Triangle;
 
-double triangle_perimeter(const Triangle *t);
-double triangle_area(const Triangle *t);
-
-
-// Для Polygon (простая реализация, можно расширить)
+// Структура для полигона
 typedef struct {
-    int sides;
-    double side_length;
+    int n;          // Количество вершин
+    Point *vertices; // Массив вершин (x, y)
 } Polygon;
 
-double polygon_perimeter(const Polygon *p);
-double polygon_area(const Polygon *p);
+// Прототипы функций для окружности
+double circle_area(Circle c);
+double circle_perimeter(Circle c);
 
+// Прототипы функций для треугольника
+double triangle_area(Triangle t);
+double triangle_perimeter(Triangle t);
+
+// Прототипы функций для полигона
+double polygon_area(Polygon p);
+double polygon_perimeter(Polygon p);
 
 #endif

@@ -1,23 +1,51 @@
 #include <stdio.h>
-#include <geometry.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <math.h>
 
-int main()
-{
-      // Circle
-      Circle circle;
-      circle.radius = 5.0;
-      printf("Circle: Perimeter = %f, Area = %f\n", circle_perimeter(&circle), circle_area(&circle));
+#include <wkt_parser.h> // Подключаем wkt_parser.h
+#include <geometry.h>    // Подключаем geometry.h
 
-      // Triangle
-      Triangle triangle;
-      triangle.a = 3.0;
-      triangle.b = 4.0;
-      triangle.c = 5.0;
-      printf("Triangle: Perimeter = %f, Area = %f\n", triangle_perimeter(&triangle), triangle_area(&triangle));
+int main() {
+    char input[256];
 
-      Polygon polygon;
-      polygon.sides = 4;
-      polygon.side_length = 5.0;
-      printf("Polygon: Perimeter = %f, Area = %f\n", polygon_perimeter(&polygon), polygon_area(&polygon));
-      return 0;
+    printf("Enter figure WKT (e.g., CIRCLE(x y, radius), TRIANGLE(x1 y1, x2 y2, x3 y3), POLYGON((x1 y1, x2 y2, ..., xn yn))): ");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        perror("Error reading input");
+        return 1;
+    }
+    input[strcspn(input, "\n")] = 0; // Удаляем символ новой строки
+
+    if (strncmp(input, "CIRCLE(", 7) == 0) {
+        Circle circle;
+        if (parse_circle_wkt(input, &circle) == 0) {
+            print_circle_wkt(&circle);
+        } else {
+            printf("Incorrect circle format\n");
+            return 1;
+        }
+    } else if (strncmp(input, "TRIANGLE(", 9) == 0) {
+        Triangle triangle;
+        if (parse_triangle_wkt(input, &triangle) == 0) {
+            print_triangle_wkt(&triangle);
+        } else {
+            printf("Incorrect triangle format\n");
+            return 1;
+        }
+    } else if (strncmp(input, "POLYGON((", 9) == 0) {
+        Polygon polygon;
+        if (parse_polygon_wkt(input, &polygon) == 0) {
+            print_polygon_wkt(&polygon);
+            free(polygon.vertices);
+        } else {
+            printf("Incorrect polygon format\n");
+            return 1;
+        }
+    } else {
+        printf("Unknown figure type\n");
+        return 1;
+    }
+
+    return 0;
 }
