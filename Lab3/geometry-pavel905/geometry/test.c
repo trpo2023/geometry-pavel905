@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "wkt_parser.h" // Включаем заголовочный файл
+#include "wkt_parser.h" 
+// Включаем заголовочный файл
 
 // Функция для тестирования parse_polygon_wkt
 void test_parse_polygon_wkt() {
