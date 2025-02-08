@@ -38,7 +38,7 @@ $(OBJ_DIR):
 $(BIN_DIR):
 	@mkdir -p $@
 
-all: $(BIN_DIR)/$(APP_NAME)
+make: $(BIN_DIR)/$(APP_NAME)
 
 $(BIN_DIR)/$(APP_NAME): $(APP_OBJ) $(WKT_PARSER_OBJ) $(LIB_NAME).a
 	@mkdir -p $(BIN_DIR)
