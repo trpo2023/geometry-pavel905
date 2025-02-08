@@ -1,0 +1,5 @@
+[alias]
+	hist = log --oneline --decorate --graph --all
+[user]
+	name = Pavel
+	email = pav.mir8@gmail.com
