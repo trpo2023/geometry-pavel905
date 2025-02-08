@@ -20,45 +20,48 @@ double cross_product(double x1, double y1, double x2, double y2, double x3, doub
     return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
 }
 
-bool intersect_circle_triangle(const Circle& c, const Triangle& t) {
+// Функция для вычисления расстояния от точки до отрезка
+double dist_point_to_segment(double px, double py, double x1, double y1, double x2, double y2) {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+
+    if (dx == 0 && dy == 0) { // Точки совпадают
+        return distance(px, py, x1, y1);
+    }
+
+    double t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+    t = fmax(0.0, fmin(1.0, t)); // Ограничиваем t от 0 до 1
+
+    double closest_x = x1 + t * dx;
+    double closest_y = y1 + t * dy;
+    return distance(px, py, closest_x, closest_y);
+}
+
+bool intersect_circle_triangle(Circle c, Triangle t) {
     // 1. Проверка, находится ли центр окружности внутри треугольника
     // Используем проверку знаков ориентированных площадей
     bool inside = true;
-    inside = inside && (cross_product(t.x1, t.y1, t.x2, t.y2, c.x, c.y) > 0);
-    inside = inside && (cross_product(t.x2, t.y2, t.x3, t.y3, c.x, c.y) > 0);
-    inside = inside && (cross_product(t.x3, t.y3, t.x1, t.y1, c.x, c.y) > 0);
+    inside = inside && (cross_product(t.x1, t.y1, t.x2, t.y2, c.x, c.y) >= 0);
+    inside = inside && (cross_product(t.x2, t.y2, t.x3, t.y3, c.x, c.y) >= 0);
+    inside = inside && (cross_product(t.x3, t.y3, t.x1, t.y1, c.x, c.y) >= 0);
     if (inside) return true;
 
     // 2. Проверка пересечения окружности со сторонами треугольника
-    // Проверяем расстояние от центра окружности до каждой стороны
-    if (distance(c.x, c.y, t.x1, t.y1) <= c.r || distance(c.x, c.y, t.x2, t.y2) <= c.r || distance(c.x, c.y, t.x3, t.y3) <= c.r) return true;
-
-    // Функция для вычисления расстояния от точки (px, py) до отрезка (x1, y1) - (x2, y2)
-    auto dist_point_to_segment = [&](double px, double py, double x1, double y1, double x2, double y2) -> double {
-        double dx = x2 - x1;
-        double dy = y2 - y1;
-
-        if (dx == 0 && dy == 0) { // Точки совпадают
-          return distance(px, py, x1, y1);
-        }
-
-        double t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
-        t = std::max(0.0, std::min(1.0, t)); // Ограничиваем t от 0 до 1
-
-        double closest_x = x1 + t * dx;
-        double closest_y = y1 + t * dy;
-        return distance(px, py, closest_x, closest_y);
-    };
-
     if (dist_point_to_segment(c.x, c.y, t.x1, t.y1, t.x2, t.y2) <= c.r) return true;
     if (dist_point_to_segment(c.x, c.y, t.x2, t.y2, t.x3, t.y3) <= c.r) return true;
     if (dist_point_to_segment(c.x, c.y, t.x3, t.y3, t.x1, t.y1) <= c.r) return true;
 
+    // 3. Проверка, находится ли хотя бы одна из вершин треугольника внутри окружности
+    double dist_v1 = distance(c.x, c.y, t.x1, t.y1);
+    double dist_v2 = distance(c.x, c.y, t.x2, t.y2);
+    double dist_v3 = distance(c.x, c.y, t.x3, t.y3);
 
-    // 3. Если ни одно из условий не выполнено, пересечения нет
+    if (dist_v1 <= c.r || dist_v2 <= c.r || dist_v3 <= c.r) {
+        return true;
+    }
+
     return false;
 }
-
 
 bool intersect_circle_polygon(const Circle& c, const Polygon& p) {
     if (p.num_vertices < 3 || p.x == nullptr || p.y == nullptr) { // Полигон должен иметь минимум 3 вершины
