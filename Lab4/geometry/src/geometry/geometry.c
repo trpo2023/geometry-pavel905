@@ -63,15 +63,15 @@ bool intersect_circle_triangle(Circle c, Triangle t) {
     return false;
 }
 
-bool intersect_circle_polygon(const Circle& c, const Polygon& p) {
-    if (p.num_vertices < 3 || p.x == nullptr || p.y == nullptr) { // Полигон должен иметь минимум 3 вершины
+bool intersect_circle_polygon(Circle c, Polygon p) {
+    if (p.n < 3 || p.x == NULL || p.y == NULL) { // Полигон должен иметь минимум 3 вершины
         return false;
     }
 
     // 1. Проверка, находится ли центр окружности внутри полигона (алгоритм заливки)
     int winding_number = 0;
-    for (int i = 0; i < p.num_vertices; ++i) {
-        int j = (i + 1) % p.num_vertices;
+    for (int i = 0; i < p.n; ++i) {
+        int j = (i + 1) % p.n;
 
         if (p.y[i] <= c.y) {
             if (p.y[j] > c.y) {
@@ -90,30 +90,22 @@ bool intersect_circle_polygon(const Circle& c, const Polygon& p) {
     if (winding_number != 0) return true; // Центр внутри
 
     // 2. Проверка пересечения окружности со сторонами полигона
-    auto dist_point_to_segment = [&](double px, double py, double x1, double y1, double x2, double y2) -> double {
-      double dx = x2 - x1;
-      double dy = y2 - y1;
-
-      if (dx == 0 && dy == 0) { // Точки совпадают
-        return distance(px, py, x1, y1);
-      }
-
-      double t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
-      t = std::max(0.0, std::min(1.0, t)); // Ограничиваем t от 0 до 1
-
-      double closest_x = x1 + t * dx;
-      double closest_y = y1 + t * dy;
-      return distance(px, py, closest_x, closest_y);
-    };
-
-    for (int i = 0; i < p.num_vertices; ++i) {
-        int j = (i + 1) % p.num_vertices;
+    for (int i = 0; i < p.n; ++i) {
+        int j = (i + 1) % p.n;
         if (dist_point_to_segment(c.x, c.y, p.x[i], p.y[i], p.x[j], p.y[j]) <= c.r) {
             return true; // Пересечение со стороной
         }
     }
 
-    // 3. Если ни одно из условий не выполнено, пересечения нет
+    // 3. Проверка, находится ли хотя бы одна из вершин полигона внутри окружности
+    for (int i = 0; i < p.n; ++i) {
+        double dist_v = distance(c.x, c.y, p.x[i], p.y[i]);
+        if (dist_v <= c.r) {
+            return true;
+        }
+    }
+
+    // 4. Если ни одно из условий не выполнено, пересечения нет
     return false;
 }
 
